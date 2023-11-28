@@ -1,15 +1,16 @@
 {
-  "name": "mongo-crud",
+  "name": "nodejs-mongo-crud",
   "version": "1.0.0",
   "description": "NodeJS + mongo CRUD app for educational purposes",
   "main": "app.js",
-  "author": "",
-  "license": "ISC",
   "scripts": {
     "start": "nodemon app.js"
   },
+  "author": "Sergei Tsvetkov",
+  "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
+    "mongodb": "^6.3.0",
     "nodemon": "^3.0.1"
   }
 }
