@@ -3,7 +3,10 @@ const dbName = "nodejs"
 const collectionName = "users"
 
 const MongoClient = require("mongodb").MongoClient
+const objectId = require("mongodb").ObjectId
 const client = new MongoClient(url)
+
+exports.isValidObjectId = objectId.isValid
 
 exports.insertUser = async function insertUser(user) {
     let result
