@@ -35,6 +35,8 @@ async function onFormSumbit(event) {
     event.preventDefault()
     const userName = event.target.userName.value
     const userAge = event.target.userAge.value
+    event.target.userName.value = ""
+    event.target.userAge.value = ""
 
     if (userName === "") {
         alert("User name should not be empty")
