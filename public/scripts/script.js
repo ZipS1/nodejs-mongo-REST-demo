@@ -1,27 +1,8 @@
 init()
 
 async function init() {
-    linkEventListeners()
-    await updateList()
-}
-
-function linkEventListeners() {
-    const editButtons = document.querySelectorAll('[id=editButton]')
-    editButtons.forEach(btn => {
-        btn.addEventListener("click", onEditButtonClick)
-    })
-
-    const deleteButtons = document.querySelectorAll('[id=deleteButton]')
-    deleteButtons.forEach(btn => {
-        btn.addEventListener("click", onDeleteButtonClick)
-    })
-
-    const confirmButtons = document.querySelectorAll('[id=confirmButton]')
-    confirmButtons.forEach(btn => {
-        btn.addEventListener("click", onConfirmButtonClick)
-    })
-
     document.forms["userForm"].addEventListener("submit", onFormSumbit)
+    await updateList()
 }
 
 async function updateList() {
@@ -38,12 +19,13 @@ async function updateList() {
     const usersList = document.getElementById("usersList")
     usersList.innerHTML = ""
     const users = await response.json();
-    for (user of users)
+    for (const user of users)
         usersList.append(createUserRow(user))
 }
 
 function createUserRow(userJson) {
     const tr = document.createElement("tr")
+    tr.setAttribute("id", userJson._id)
 
     const idTd = document.createElement("td")
     idTd.append(userJson._id)
@@ -57,15 +39,35 @@ function createUserRow(userJson) {
     ageTd.append(userJson.age)
     tr.append(ageTd)
 
+    const editTd = document.createElement("td")
+    const editButton = document.createElement("button")
+    editButton.setAttribute("id", "editButton")
+    editButton.addEventListener("click", e => {
+        onEditButtonClick(e, userJson._id)})
+    editButton.append("Edit")
+    editTd.append(editButton)
+    tr.append(editTd)
+
+    const deleteTd = document.createElement("td")
+    const deleteButton = document.createElement("button")
+    deleteButton.setAttribute("id", "deleteButton")
+    deleteButton.addEventListener("click", e => {
+        onDeleteButtonClick(e, userJson._id)})
+    deleteButton.append("Delete")
+    deleteTd.append(deleteButton)
+    tr.append(deleteTd)
+
     return tr
 }
 
-async function onEditButtonClick() {
-    console.log(this.parentElement.parentElement.outerHTML)
+async function onEditButtonClick(event, id) {
+    event.preventDefault()
+    console.log(`Clicked on EDIT with ${id}`)
 }
 
-async function onDeleteButtonClick() {
-    console.log(this.innerHTML)
+async function onDeleteButtonClick(event, id) {
+    event.preventDefault()
+    console.log(`Clicked on DELETE with ${id}`)
 }
 
 async function onConfirmButtonClick() {
