@@ -4,8 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users list</title>
+    <script src="scripts/script.js"></script>
 </head>
 <body>
-    <h1>Index sample</h1>
+    <h1>Users</h1>
+    <h2>Add new</h2>
+    <form action="api/users/create" method="post">
+        <p>
+            <label for="userName">Name</label>
+            <input type="text" name="userName" id="userName">
+        </p>
+        <p>
+            <label for="userAge">Age</label>
+            <input type="text" name="userAge" id="userAge">
+        </p>
+        <input type="submit" value="Add">
+    </form>
+
+    <h2>List</h2>
+    <table>
+        <tr>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Age</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>SampleID01</td>
+            <td>User1</td>
+            <td>100</td>
+            <td><button>Edit</button></td>
+            <td><button>Delete</button></td>
+        </tr>
+        <tr>
+            <td><input type="text" value="SampleID02" width=""></td>
+            <td><input type="text" value="User1"></td>
+            <td><input type="text" value="100"></td>
+            <td><button>Confirm</button></td>
+            <td><button disabled>Delete</button></td>
+        </tr>
+    </table>
 </body>
 </html>
