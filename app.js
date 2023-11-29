@@ -1,6 +1,5 @@
 const express = require("express")
 const app = express()
-const mongo = require("./mongo")
 const routers = require("./routers")
 
 const usersApiRouter = routers.usersApiRouter

@@ -23,6 +23,24 @@ exports.insertUser = async function insertUser(user) {
     }
 }
 
+exports.findAll = async function findAll() {
+    let result
+    try {
+        await client.connect()
+        const db = client.db(dbName)
+        const collection = db.collection(collectionName)
+
+        result = await collection.find().toArray()
+    } catch (err) {
+        console.log("Error occured!")
+        console.log(err)
+        result = {error: 1}
+    } finally {
+        await client.close()
+        return result
+    }
+}
+
 exports.findUser = async function findUser(findJson) {
     let result
     try {
