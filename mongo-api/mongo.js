@@ -41,13 +41,14 @@ exports.findAll = async function findAll() {
     }
 }
 
-exports.findUser = async function findUser(findJson) {
+exports.findUser = async function findUser(id) {
     let result
     try {
         await client.connect()
         const db = client.db(dbName)
         const collection = db.collection(collectionName)
 
+        const findJson = {_id: id }
         result = await collection.find(findJson).toArray()
     } catch (err) {
         console.log("Error occured!")
@@ -78,14 +79,16 @@ exports.updateUser = async function updateUser(oldJson, newJson) {
     }
 }
 
-exports.deleteUser = async function deleteUser(deleteJson) {
+exports.deleteUser = async function deleteUser(id) {
     let result
     try {
         await client.connect()
         const db = client.db(dbName)
         const collection = db.collection(collectionName)
         
-        result = await collection.deleteOne(deleteJson)
+        const objId = new objectId(id)
+        const deleteJson = {_id: objId}
+        result = await collection.findOneAndDelete(deleteJson)
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
@@ -96,7 +99,7 @@ exports.deleteUser = async function deleteUser(deleteJson) {
     }
 }
 
-exports.deleteAll = async function dropUsers() {
+exports.deleteAll = async function deleteAll() {
     let result
     try {
         await client.connect()
