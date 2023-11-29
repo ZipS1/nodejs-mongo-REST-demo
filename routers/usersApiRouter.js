@@ -34,8 +34,16 @@ usersApiRouter.put("/:id", async (req, res) => {
 })
 
 usersApiRouter.delete("/:id", async (req, res) => {
-    console.log("DELETE request handled")
-    res.send({mock: true, id: req.params.id})
+    const id = req.params.id
+    if (mongo.isValidObjectId(id) == false) {
+        res.status(400).send({invalidObjectId: true})
+        return
+    }
+
+    const result = await mongo.deleteUser(req.params.id)
+    result === null ? res.sendStatus(404) :
+    result.error !== undefined ? res.sendStatus(500) :
+                                    res.send(result)
 })
 
 function validateUserJson(userJson) {

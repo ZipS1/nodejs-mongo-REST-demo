@@ -67,7 +67,16 @@ async function onEditButtonClick(event, id) {
 
 async function onDeleteButtonClick(event, id) {
     event.preventDefault()
-    console.log(`Clicked on DELETE with ${id}`)
+
+    const response = await fetch(`api/users/${id}`, {
+        method: "DELETE",
+        headers: { "Accept": "application/json" }
+    })
+
+    if (response.ok == false)
+        alert("Cannot delete user!")
+    else
+        await updateList()
 }
 
 async function onConfirmButtonClick() {
