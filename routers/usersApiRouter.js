@@ -24,7 +24,6 @@ usersApiRouter.post("/", async (req, res) => {
         res.send(result)
     else
         res.sendStatus(500)
-    
 })
 
 usersApiRouter.put("/:id", async (req, res) => {
@@ -41,8 +40,8 @@ function validateUserJson(userJson) {
     return Object.hasOwn(userJson, 'name')
             && Object.hasOwn(userJson, 'age')
             && Object.keys(userJson).length == 2
+            && userJson.name !== ""
             && userJson.age > 0
-
 }
 
 module.exports.usersApiRouter = usersApiRouter
