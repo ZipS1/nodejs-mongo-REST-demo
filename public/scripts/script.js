@@ -19,19 +19,23 @@ function linkEventListeners() {
     document.forms["userForm"].addEventListener("submit", onFormSumbit)
 }
 
-function onEditButtonClick() {
+async function onEditButtonClick() {
     console.log(this.parentElement.parentElement.outerHTML)
 }
 
-function onDeleteButtonClick() {
+async function onDeleteButtonClick() {
     console.log(this.innerHTML)
 }
 
-function onConfirmButtonClick() {
+async function onConfirmButtonClick() {
     console.log(this.innerHTML)
 }
 
-function onFormSumbit(e) {
+async function onFormSumbit(e) {
     e.preventDefault()
-    console.log("Form submitted")
+    const response = await fetch("/api/users/", {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+    });
+    console.log(await response.json())
 }
