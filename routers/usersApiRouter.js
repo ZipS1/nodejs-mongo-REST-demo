@@ -14,14 +14,17 @@ usersApiRouter.post("/", async (req, res) => {
         return
     }
 
-    console.log(req.body)
     if (validateUserJson(req.body) == false) {
         res.status(400).send({invalidJson: true})
         return
     }
 
     const result = await mongo.insertUser(req.body)
-    res.send(result)
+    if (result.error === undefined)
+        res.send(result)
+    else
+        res.sendStatus(500)
+    
 })
 
 usersApiRouter.put("/:id", async (req, res) => {
