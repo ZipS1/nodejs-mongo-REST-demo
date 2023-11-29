@@ -43,7 +43,7 @@ async function onFormSumbit(event) {
 
     const response = await fetch("/api/users/", {
         method: "POST",
-        headers: { "Accept": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             name: userName,
             age: parseInt(userAge, 10)
