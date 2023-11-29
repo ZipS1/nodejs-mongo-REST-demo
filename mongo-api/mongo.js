@@ -16,7 +16,7 @@ exports.insertUser = async function insertUser(user) {
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
-        result = {error: 1}
+        result = {error: true}
     } finally {
         await client.close()
         return result
@@ -34,7 +34,7 @@ exports.findAll = async function findAll() {
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
-        result = {error: 1}
+        result = {error: true}
     } finally {
         await client.close()
         return result
@@ -52,7 +52,7 @@ exports.findUser = async function findUser(findJson) {
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
-        result = {error: 1}
+        result = {error: true}
     } finally {
         await client.close()
         return result
@@ -71,7 +71,7 @@ exports.updateUser = async function updateUser(oldJson, newJson) {
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
-        result = {error: 1}
+        result = {error: true}
     } finally {
         await client.close()
         return result
@@ -89,7 +89,7 @@ exports.deleteUser = async function deleteUser(deleteJson) {
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
-        result = {error: 1}
+        result = {error: true}
     } finally {
         await client.close()
         return result
@@ -107,7 +107,7 @@ exports.deleteAll = async function dropUsers() {
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
-        result = {error: 1}
+        result = {error: true}
     } finally {
         await client.close()
         return result
