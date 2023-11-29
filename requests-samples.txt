@@ -1,0 +1,15 @@
+// Return all users
+
+GET http://localhost:3000/api/users HTTP/1.1
+content-type: application/json
+
+
+// Invalid objectid sample
+
+DELETE http://localhost:3000/api/users/3 HTTP/1.1
+accept: application/json
+
+// Not existing id sample
+
+DELETE http://localhost:3000/api/users/6567c145ef1133f1bc2114d2 HTTP/1.1
+accept: application/json
