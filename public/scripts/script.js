@@ -1,4 +1,9 @@
-linkEventListeners()
+init()
+
+async function init() {
+    linkEventListeners()
+    await updateList()
+}
 
 function linkEventListeners() {
     const editButtons = document.querySelectorAll('[id=editButton]')
@@ -17,6 +22,42 @@ function linkEventListeners() {
     })
 
     document.forms["userForm"].addEventListener("submit", onFormSumbit)
+}
+
+async function updateList() {
+    const response = await fetch("/api/users", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    });
+
+    if (response.ok == false) {
+        alert("Cannot get users list!")
+        return
+    }
+
+    const usersList = document.getElementById("usersList")
+    usersList.innerHTML = ""
+    const users = await response.json();
+    for (user of users)
+        usersList.append(createUserRow(user))
+}
+
+function createUserRow(userJson) {
+    const tr = document.createElement("tr")
+
+    const idTd = document.createElement("td")
+    idTd.append(userJson._id)
+    tr.append(idTd)
+
+    const nameTd = document.createElement("td")
+    nameTd.append(userJson.name)
+    tr.append(nameTd)
+
+    const ageTd = document.createElement("td")
+    ageTd.append(userJson.age)
+    tr.append(ageTd)
+
+    return tr
 }
 
 async function onEditButtonClick() {
@@ -48,7 +89,7 @@ async function onFormSumbit(event) {
         return
     }
 
-    const response = await fetch("/api/users/", {
+    const response = await fetch("/api/users", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -56,4 +97,9 @@ async function onFormSumbit(event) {
             age: parseInt(userAge, 10)
         })
     });
+
+    if (response.ok == false)
+        alert("Cannot add new user!")
+    else
+        await updateList()
 }

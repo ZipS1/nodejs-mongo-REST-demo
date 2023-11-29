@@ -3,9 +3,11 @@ const mongo = require("../mongo-api")
 const usersApiRouter = express.Router()
 
 usersApiRouter.get("/", async (req, res) => {
-    const users = await mongo.findAll()
-    console.log(users)
-    res.send(users)
+    const result = await mongo.findAll()
+    if (result.error === undefined)
+        res.send(result)
+    else
+        res.sendStatus(500)
 })
 
 usersApiRouter.post("/", async (req, res) => {
