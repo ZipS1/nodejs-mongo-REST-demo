@@ -31,11 +31,22 @@ async function onConfirmButtonClick() {
     console.log(this.innerHTML)
 }
 
-async function onFormSumbit(e) {
-    e.preventDefault()
+async function onFormSumbit(event) {
+    event.preventDefault()
+    const userName = event.target.userName.value
+    const userAge = event.target.userAge.value
+
+    if (userAge <= 0) {
+        alert("User age should be > 0")
+        return
+    }
+
     const response = await fetch("/api/users/", {
-        method: "GET",
+        method: "POST",
         headers: { "Accept": "application/json" },
+        body: JSON.stringify({
+            name: userName,
+            age: parseInt(userAge, 10)
+        })
     });
-    console.log(await response.json())
 }
