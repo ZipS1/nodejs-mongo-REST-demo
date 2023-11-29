@@ -15,6 +15,8 @@ function linkEventListeners() {
     confirmButtons.forEach(btn => {
         btn.addEventListener("click", onConfirmButtonClick)
     })
+
+    document.forms["userForm"].addEventListener("submit", onFormSumbit)
 }
 
 function onEditButtonClick() {
@@ -27,4 +29,9 @@ function onDeleteButtonClick() {
 
 function onConfirmButtonClick() {
     console.log(this.innerHTML)
+}
+
+function onFormSumbit(e) {
+    e.preventDefault()
+    console.log("Form submitted")
 }
