@@ -29,8 +29,25 @@ usersApiRouter.post("/", async (req, res) => {
 })
 
 usersApiRouter.put("/:id", async (req, res) => {
-    console.log("PUT request handled")
-    res.send({mock: true, id: req.params.id})          
+    if (req.body === undefined) {
+        res.sendStatus(400)
+        return
+    }
+
+    if (validateUserJson(req.body) == false) {
+        res.status(400).send({invalidJson: true})
+        return
+    }
+
+    const id = req.params.id
+    if (mongo.isValidObjectId(id) == false) {
+        res.status(400).send({invalidObjectId: true})
+    }
+
+    const result = await mongo.updateUser(id, req.body)
+    result === null ? res.sendStatus(404) :
+    result.error !== undefined ? res.sendStatus(500) :
+                                    res.send(result)
 })
 
 usersApiRouter.delete("/:id", async (req, res) => {

@@ -114,8 +114,24 @@ async function onDeleteButtonClick(event, id) {
         await updateList()
 }
 
-async function onConfirmButtonClick() {
-    console.log(this.innerHTML)
+async function onConfirmButtonClick(event, id) {
+    event.preventDefault()
+    const newName = document.getElementById("newName").value
+    const newAge = document.getElementById("newAge").value
+
+    const response = fetch(`api/users/${id}`, {
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name: newName,
+            age: parseInt(newAge, 10)
+        })
+    })
+
+    if (response.ok == false)
+        alert("Cannot edit user!")
+
+    await updateList()
 }
 
 async function onFormSumbit(event) {
