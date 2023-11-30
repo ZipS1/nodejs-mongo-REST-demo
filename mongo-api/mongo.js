@@ -63,15 +63,17 @@ exports.findUser = async function findUser(id) {
     }
 }
 
-exports.updateUser = async function updateUser(oldJson, newJson) {
+exports.updateUser = async function updateUser(id, user) {
     let result
     try {
         await client.connect()
         const db = client.db(dbName)
         const collection = db.collection(collectionName)
 
-        const setJson = {$set: {newJson}}
-        result = await collection.updateOne(oldJson, setJson)
+        const objId = new objectId(id)
+        const findJson = {_id: objId}
+        const setJson = {$set: {name: user.name, age: user.age}}
+        result = await collection.findOneAndUpdate(findJson, setJson)
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
