@@ -1,2 +1,2 @@
 # nodejs-mongo-crud
-NodeJS + mongo CRUD app for educational purposes
+NodeJS + mongo REST demo for educational purposes
