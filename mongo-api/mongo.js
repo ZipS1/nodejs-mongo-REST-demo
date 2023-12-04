@@ -51,8 +51,9 @@ exports.findUser = async function findUser(id) {
         const db = client.db(dbName)
         const collection = db.collection(collectionName)
 
-        const findJson = {_id: id }
-        result = await collection.find(findJson).toArray()
+        const objId = new objectId(id)
+        const findJson = {_id: objId }
+        result = await collection.findOne(findJson)
     } catch (err) {
         console.log("Error occured!")
         console.log(err)
