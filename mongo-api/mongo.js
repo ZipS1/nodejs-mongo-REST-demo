@@ -44,14 +44,23 @@ exports.findAll = async function findAll() {
     }
 }
 
-exports.findUser = async function findUser(id) {
+exports.findUser = async function findUser(queryJson) {
     let result
     try {
         await client.connect()
         const db = client.db(dbName)
         const collection = db.collection(collectionName)
 
-        const findJson = {_id: id }
+        let findJson = new Object()
+        if (queryJson.id !== undefined)
+            findJson._id = new objectId(queryJson.id)
+
+        if (queryJson.name !== undefined)
+            findJson.name = queryJson.name 
+        
+        if (queryJson.age !== undefined)
+            findJson.age = parseInt(queryJson.age, 10)
+
         result = await collection.find(findJson).toArray()
     } catch (err) {
         console.log("Error occured!")

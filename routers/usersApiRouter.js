@@ -10,13 +10,34 @@ usersApiRouter.get("/", async (req, res) => {
         res.sendStatus(500)
 })
 
+usersApiRouter.get("/user", async (req, res) => {
+    
+    if (validateUserFindQuery(req.query) == false) {
+        res.status(400).send({InvalidGetQuery: true})
+        return
+    }
+
+    if (req.query.id !== undefined
+        && mongo.isValidObjectId(req.query.id) == false)
+    {
+        res.status(400).send({invalidObjectId: true})
+        return
+    }
+
+    const result = await mongo.findUser(req.query)
+    if (result.error === undefined)
+        res.send(result)
+    else
+        res.sendStatus(500)
+})
+
 usersApiRouter.post("/", async (req, res) => {
     if (req.body === undefined) {
         res.sendStatus(400)
         return
     }
 
-    if (validateUserJson(req.body) == false) {
+    if (validateUserPutJson(req.body) == false) {
         res.status(400).send({invalidJson: true})
         return
     }
@@ -34,7 +55,7 @@ usersApiRouter.put("/:id", async (req, res) => {
         return
     }
 
-    if (validateUserJson(req.body) == false) {
+    if (validateUserPutJson(req.body) == false) {
         res.status(400).send({invalidJson: true})
         return
     }
@@ -42,6 +63,7 @@ usersApiRouter.put("/:id", async (req, res) => {
     const id = req.params.id
     if (mongo.isValidObjectId(id) == false) {
         res.status(400).send({invalidObjectId: true})
+        return
     }
 
     const result = await mongo.updateUser(id, req.body)
@@ -63,12 +85,20 @@ usersApiRouter.delete("/:id", async (req, res) => {
                                     res.send(result)
 })
 
-function validateUserJson(userJson) {
+function validateUserPutJson(userJson) {
     return Object.hasOwn(userJson, 'name')
             && Object.hasOwn(userJson, 'age')
             && Object.keys(userJson).length == 2
             && userJson.name !== ""
             && userJson.age > 0
+}
+
+function validateUserFindQuery(query) {
+    const queryLength = Object.keys(query).length
+    return (queryLength > 0 && queryLength <= 3)
+            && (Object.hasOwn(query, 'id')
+                || Object.hasOwn(query, 'name')
+                || Object.hasOwn(query, 'age'))
 }
 
 module.exports.usersApiRouter = usersApiRouter

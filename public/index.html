@@ -7,8 +7,9 @@
 </head>
 <body>
     <h1>Users</h1>
+
     <h2>Add new</h2>
-    <form name="userForm">
+    <form name="addUserForm">
         <p>
             <label for="userName">Name</label>
             <input type="text" name="userName" id="userName" autocomplete="off">
@@ -19,6 +20,24 @@
         </p>
         <input type="submit" id="addButton" value="Add">
         <input type="reset" value="Clear">
+    </form>
+
+    <h2>Find user</h2>
+    <form name="findUserForm">
+        <p>
+            <label for="id">ID</label>
+            <input type="text" name="id" autocomplete="off">
+        </p>
+        <p>
+            <label for="name">Name</label>
+            <input type="text" name="name" autocomplete="off">
+        </p>
+        <p>
+            <label for="age">Age</label>
+            <input type="number" name="age">
+        </p>
+        <input type="submit" id="findButton" value="Find">
+        <input type="reset" id="showAllButton" value="Clear">
     </form>
 
     <h2>List</h2>
@@ -35,6 +54,6 @@
     <tbody id="usersList">
     </tbody>
     </table>
-    <script src="scripts/script.js"></script>
+    <script src="scripts/script.js" type="module"></script>
 </body>
 </html>

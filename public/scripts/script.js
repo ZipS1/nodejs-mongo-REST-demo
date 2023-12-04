@@ -1,12 +1,16 @@
+import constants from "./constants.js"
+
 init()
 
 async function init() {
-    document.forms["userForm"].addEventListener("submit", onFormSumbit)
-    await updateList()
+    document.forms[constants.addUserForm].addEventListener("submit", onAddUserFormSumbit)
+    document.forms[constants.findUserForm].addEventListener("submit", onFindUserFormSubmit)
+    document.getElementById(constants.showAllButtonId).addEventListener("click", showAllUsers)
+    await showAllUsers()
 }
 
-async function updateList() {
-    const addButton = document.getElementById("addButton")
+async function showAllUsers() {
+    const addButton = document.getElementById(constants.addButtonId)
     addButton.removeAttribute("disabled")
 
     const response = await fetch("/api/users", {
@@ -19,11 +23,7 @@ async function updateList() {
         return
     }
 
-    const usersList = document.getElementById("usersList")
-    usersList.innerHTML = ""
-    const users = await response.json();
-    for (const user of users)
-        usersList.append(createUserRow(user))
+    fillListWith(await response.json())
 }
 
 function createUserRow(userJson) {
@@ -44,7 +44,7 @@ function createUserRow(userJson) {
 
     const editTd = document.createElement("td")
     const editButton = document.createElement("button")
-    editButton.setAttribute("id", "editButton")
+    editButton.setAttribute("id", constants.editButtonId)
     editButton.addEventListener("click", e => {
         onEditButtonClick(e, userJson._id)})
     editButton.append("Edit")
@@ -53,7 +53,7 @@ function createUserRow(userJson) {
 
     const deleteTd = document.createElement("td")
     const deleteButton = document.createElement("button")
-    deleteButton.setAttribute("id", "deleteButton")
+    deleteButton.setAttribute("id", constants.deleteButtonId)
     deleteButton.addEventListener("click", e => {
         onDeleteButtonClick(e, userJson._id)})
     deleteButton.append("Delete")
@@ -88,14 +88,17 @@ async function onEditButtonClick(event, id) {
 
     const firstButtonTd = rowTds[3]
     const confirmButon = document.createElement("button")
-    confirmButon.setAttribute("id", "confirmButton")
+    confirmButon.setAttribute("id", constants.confirmButtonId)
     confirmButon.addEventListener("click", e => {
         onConfirmButtonClick(e, id)})
     confirmButon.append("Confirm")
     firstButtonTd.innerHTML = ""
     firstButtonTd.append(confirmButon)
 
-    const otherButtons = document.querySelectorAll(`#editButton, #deleteButton, #addButton`)
+    const otherButtons = document.querySelectorAll
+        (`#${constants.editButtonId}, #${constants.deleteButtonId},
+            #${constants.addButtonId}, #${constants.findButtonId}`)
+
     for (const btn of otherButtons)
         btn.setAttribute("disabled", "")
 }
@@ -111,7 +114,7 @@ async function onDeleteButtonClick(event, id) {
     if (response.ok == false)
         alert("Cannot delete user!")
     else
-        await updateList()
+        await showAllUsers()
 }
 
 async function onConfirmButtonClick(event, id) {
@@ -131,10 +134,10 @@ async function onConfirmButtonClick(event, id) {
     if (response.ok == false)
         alert("Cannot edit user!")
 
-    await updateList()
+    await showAllUsers()
 }
 
-async function onFormSumbit(event) {
+async function onAddUserFormSumbit(event) {
     event.preventDefault()
     const userName = event.target.userName.value
     const userAge = event.target.userAge.value
@@ -163,5 +166,39 @@ async function onFormSumbit(event) {
     if (response.ok == false)
         alert("Cannot add new user!")
     else
-        await updateList()
+        await showAllUsers()
+}
+
+async function onFindUserFormSubmit(event) {
+    event.preventDefault()
+    const id = event.target.id.value
+    const name = event.target.name.value
+    const age = event.target.age.value
+
+    let query = "?"
+    if (id !== "")
+        query += `id=${id}&`
+    if (name !== "")
+        query += `name=${name}&`
+    if (age !== "")
+        query += `age=${age}&`
+
+    const response = await fetch("/api/users/user" + query, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    });
+
+    if (response.ok == false) {
+        alert("Cannot get users with this parameters!")
+        return
+    }
+
+    fillListWith(await response.json())
+}
+
+async function fillListWith(usersJson) {
+    const usersList = document.getElementById(constants.usersListId)
+    usersList.innerHTML = ""
+    for (const user of usersJson)
+        usersList.append(createUserRow(user))
 }
