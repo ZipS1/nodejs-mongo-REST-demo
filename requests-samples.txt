@@ -8,6 +8,11 @@ content-type: application/json
 GET http://localhost:3000/api/users/user?id=656dafaf7ca393f56b425a30
 content-type: application/json
 
+// Return user by name
+
+GET http://localhost:3000/api/users/user?name=Ada
+content-type: application/json
+
 // Invalid GET user query
 
 GET http://localhost:3000/api/users/user?
