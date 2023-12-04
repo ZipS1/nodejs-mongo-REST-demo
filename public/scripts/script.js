@@ -1,12 +1,14 @@
+import constants from "./constants.js"
+
 init()
 
 async function init() {
-    document.forms["userForm"].addEventListener("submit", onFormSumbit)
+    document.forms[constants.addUserForm].addEventListener("submit", onAddUserFormSumbit)
     await updateList()
 }
 
 async function updateList() {
-    const addButton = document.getElementById("addButton")
+    const addButton = document.getElementById(constants.addButtonId)
     addButton.removeAttribute("disabled")
 
     const response = await fetch("/api/users", {
@@ -19,7 +21,7 @@ async function updateList() {
         return
     }
 
-    const usersList = document.getElementById("usersList")
+    const usersList = document.getElementById(constants.usersListId)
     usersList.innerHTML = ""
     const users = await response.json();
     for (const user of users)
@@ -44,7 +46,7 @@ function createUserRow(userJson) {
 
     const editTd = document.createElement("td")
     const editButton = document.createElement("button")
-    editButton.setAttribute("id", "editButton")
+    editButton.setAttribute("id", constants.editButtonId)
     editButton.addEventListener("click", e => {
         onEditButtonClick(e, userJson._id)})
     editButton.append("Edit")
@@ -53,7 +55,7 @@ function createUserRow(userJson) {
 
     const deleteTd = document.createElement("td")
     const deleteButton = document.createElement("button")
-    deleteButton.setAttribute("id", "deleteButton")
+    deleteButton.setAttribute("id", constants.deleteButtonId)
     deleteButton.addEventListener("click", e => {
         onDeleteButtonClick(e, userJson._id)})
     deleteButton.append("Delete")
@@ -88,14 +90,16 @@ async function onEditButtonClick(event, id) {
 
     const firstButtonTd = rowTds[3]
     const confirmButon = document.createElement("button")
-    confirmButon.setAttribute("id", "confirmButton")
+    confirmButon.setAttribute("id", constants.confirmButtonId)
     confirmButon.addEventListener("click", e => {
         onConfirmButtonClick(e, id)})
     confirmButon.append("Confirm")
     firstButtonTd.innerHTML = ""
     firstButtonTd.append(confirmButon)
 
-    const otherButtons = document.querySelectorAll(`#editButton, #deleteButton, #addButton`)
+    const otherButtons = document.querySelectorAll
+        (`#${constants.editButtonId}, #${constants.deleteButtonId}, #${constants.addButtonId}`)
+
     for (const btn of otherButtons)
         btn.setAttribute("disabled", "")
 }
@@ -134,7 +138,7 @@ async function onConfirmButtonClick(event, id) {
     await updateList()
 }
 
-async function onFormSumbit(event) {
+async function onAddUserFormSumbit(event) {
     event.preventDefault()
     const userName = event.target.userName.value
     const userAge = event.target.userAge.value
