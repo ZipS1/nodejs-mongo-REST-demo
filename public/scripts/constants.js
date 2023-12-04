@@ -4,9 +4,11 @@ const constants = {
 
     usersListId: "usersList",
     addButtonId: "addButton",
+    findButtonId: "findButton",
     editButtonId: "editButton",
     deleteButtonId: "deleteButton",
-    confirmButtonId: "confirmButton"
+    confirmButtonId: "confirmButton",
+    showAllButtonId: "showAllButton",
 }
 
 export default constants
