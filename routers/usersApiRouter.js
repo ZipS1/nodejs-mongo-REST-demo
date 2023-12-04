@@ -12,7 +12,7 @@ usersApiRouter.get("/", async (req, res) => {
 
 usersApiRouter.get("/user", async (req, res) => {
     
-    if (validateUserQuery(req.query) == false) {
+    if (validateUserFindQuery(req.query) == false) {
         res.status(400).send({InvalidGetQuery: true})
         return
     }
@@ -35,7 +35,7 @@ usersApiRouter.post("/", async (req, res) => {
         return
     }
 
-    if (validateUserJson(req.body) == false) {
+    if (validateUserPutJson(req.body) == false) {
         res.status(400).send({invalidJson: true})
         return
     }
@@ -53,7 +53,7 @@ usersApiRouter.put("/:id", async (req, res) => {
         return
     }
 
-    if (validateUserJson(req.body) == false) {
+    if (validateUserPutJson(req.body) == false) {
         res.status(400).send({invalidJson: true})
         return
     }
@@ -83,7 +83,7 @@ usersApiRouter.delete("/:id", async (req, res) => {
                                     res.send(result)
 })
 
-function validateUserJson(userJson) {
+function validateUserPutJson(userJson) {
     return Object.hasOwn(userJson, 'name')
             && Object.hasOwn(userJson, 'age')
             && Object.keys(userJson).length == 2
@@ -91,7 +91,7 @@ function validateUserJson(userJson) {
             && userJson.age > 0
 }
 
-function validateUserQuery(query) {
+function validateUserFindQuery(query) {
     const queryLength = Object.keys(query).length
     return (queryLength == 0 || queryLength > 3)
             && Object.hasOwn(query, 'id')
