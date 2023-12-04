@@ -17,7 +17,9 @@ usersApiRouter.get("/user", async (req, res) => {
         return
     }
 
-    if (mongo.isValidObjectId(req.query.id) == false) {
+    if (req.query.id !== undefined
+        && mongo.isValidObjectId(req.query.id) == false)
+    {
         res.status(400).send({invalidObjectId: true})
         return
     }
@@ -93,10 +95,10 @@ function validateUserPutJson(userJson) {
 
 function validateUserFindQuery(query) {
     const queryLength = Object.keys(query).length
-    return (queryLength == 0 || queryLength > 3)
-            && Object.hasOwn(query, 'id')
-            && Object.hasOwn(query, 'name')
-            && Object.hasOwn(query, 'age')
+    return (queryLength > 0 && queryLength <= 3)
+            && (Object.hasOwn(query, 'id')
+                || Object.hasOwn(query, 'name')
+                || Object.hasOwn(query, 'age'))
 }
 
 module.exports.usersApiRouter = usersApiRouter
