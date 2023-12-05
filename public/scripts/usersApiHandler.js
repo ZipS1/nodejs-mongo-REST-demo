@@ -4,21 +4,16 @@ async function getAllUsers() {
         headers: { "Accept": "application/json" }
     });
 
-    if (response.ok == false) {
-        alert("Cannot get users list!")
-        return
-    }
-
-    return await response
+    return response
 }
 
 async function findUsers(findJson) {
     let query = "?"
-    if (id !== "")
+    if (findJson.id !== "")
         query += `id=${findJson.id}&`
-    if (name !== "")
+    if (findJson.name !== "")
         query += `name=${findJson.name}&`
-    if (age !== "")
+    if (findJson.age !== "")
         query += `age=${findJson.age}&`
 
     const response = await fetch("/api/users/user" + query, {

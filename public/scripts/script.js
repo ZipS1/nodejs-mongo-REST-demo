@@ -14,7 +14,7 @@ async function init() {
 async function showAllUsers() {
     await enableButtons()
     const response = await apiFunctions.getAllUsers()
-    fillListWith(await response.json())
+    response.ok ? fillListWith(await response.json()) : alert("Cannot get all users!")
 }
 
 function createUserRow(userJson) {
@@ -144,7 +144,7 @@ async function onFindUserFormSubmit(event) {
     const findJson = {
         id: id,
         name: name,
-        age: parseInt(age, 10)
+        age: age,
     }
 
     const response = await apiFunctions.findUsers(findJson)
