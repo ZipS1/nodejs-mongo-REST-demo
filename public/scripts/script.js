@@ -167,21 +167,11 @@ async function printUsersList() {
     let printWindow = window.open("", "", "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0")
     printWindow.document.write(await getUsersListPrintHtml())
     printWindow.document.close()
-    // printWindow.focus()
     printWindow.print()
     printWindow.close()
 }
 
 async function getUsersListPrintHtml() {
-    const response = await apiFunctions.getAllUsers()
-
-    if (response.ok == false) {
-        alert("Cannot get users list for printing!")
-        return
-    }
-
-    const users = await response.json()
-
     const table = document.createElement("table")
     table.setAttribute("border", "1")
 
@@ -203,26 +193,23 @@ async function getUsersListPrintHtml() {
     thead.append(headRow)
     table.append(thead)
 
-    const tbody = document.createElement("tbody")
-    for (const user of users)
-        tbody.append(await createUserPrintRow(user))
+    let tbody = document.getElementById(constants.usersListId).cloneNode(true)
+    tbody = await removeIdAndButtonCols(tbody)
 
     table.append(tbody)
     return table.outerHTML
 }
 
-async function createUserPrintRow(userJson) {
-    const tr = document.createElement("tr")
+async function removeIdAndButtonCols(tbody) {
+    const rows = tbody.querySelectorAll("tr")
+    for (let i = 0; i < rows.length; i++) {
+        let row = rows[i]
+        row.removeChild(row.firstChild)
+        row.removeChild(row.lastElementChild)
+        row.removeChild(row.lastElementChild)
+    }
 
-    const nameTd = document.createElement("td")
-    nameTd.append(userJson.name)
-    tr.append(nameTd)
-
-    const ageTd = document.createElement("td")
-    ageTd.append(userJson.age)
-    tr.append(ageTd)
-    
-    return tr
+    return tbody
 }
 
 async function disableButtonsExceptConfirm() {
