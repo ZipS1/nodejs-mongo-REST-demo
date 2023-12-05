@@ -12,15 +12,7 @@ async function init() {
 }
 
 async function showAllUsers() {
-    const addButton = document.getElementById(constants.addButtonId)
-    addButton.removeAttribute("disabled")
-
-    const findButton = document.getElementById(constants.findButtonId)
-    findButton.removeAttribute("disabled")
-
-    const printButton = document.getElementById(constants.printButtonId)
-    printButton.removeAttribute("disabled")
-
+    await enableButtons()
     const response = await apiFunctions.getAllUsers()
     fillListWith(await response.json())
 }
@@ -94,13 +86,7 @@ async function onEditButtonClick(event, id) {
     firstButtonTd.innerHTML = ""
     firstButtonTd.append(confirmButon)
 
-    const otherButtons = document.querySelectorAll
-        (`#${constants.editButtonId}, #${constants.deleteButtonId},
-            #${constants.addButtonId}, #${constants.findButtonId},
-            #${constants.printButtonId}`)
-
-    for (const btn of otherButtons)
-        btn.setAttribute("disabled", "")
+    await disableButtonsExceptConfirm();
 }
 
 async function onDeleteButtonClick(event, id) {
@@ -214,4 +200,25 @@ async function getUserHtmlTr(userJson) {
     tr.append(ageTd)
     
     return tr
+}
+
+async function disableButtonsExceptConfirm() {
+    const otherButtons = document.querySelectorAll
+        (`#${constants.editButtonId}, #${constants.deleteButtonId},
+            #${constants.addButtonId}, #${constants.findButtonId},
+            #${constants.printButtonId}`)
+
+    for (const btn of otherButtons)
+        btn.setAttribute("disabled", "")
+}
+
+async function enableButtons() {
+    const addButton = document.getElementById(constants.addButtonId)
+    addButton.removeAttribute("disabled")
+
+    const findButton = document.getElementById(constants.findButtonId)
+    findButton.removeAttribute("disabled")
+
+    const printButton = document.getElementById(constants.printButtonId)
+    printButton.removeAttribute("disabled")
 }
