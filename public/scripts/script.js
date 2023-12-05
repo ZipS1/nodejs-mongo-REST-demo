@@ -7,7 +7,7 @@ async function init() {
     document.forms[constants.addUserForm].addEventListener("submit", onAddUserFormSumbit)
     document.forms[constants.findUserForm].addEventListener("submit", onFindUserFormSubmit)
     document.getElementById(constants.showAllButtonId).addEventListener("click", showAllUsers)
-    document.getElementById(constants.printButtonId).addEventListener("click", printList)
+    document.getElementById(constants.printButtonId).addEventListener("click", printUsersList)
     await showAllUsers()
 }
 
@@ -163,32 +163,55 @@ async function fillListWith(usersJson) {
         usersList.append(createUserRow(user))
 }
 
-async function printList() {
+async function printUsersList() {
     let printWindow = window.open("", "", "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0")
-    printWindow.document.write(await getPrintHtml())
+    printWindow.document.write(await getUsersListPrintHtml())
     printWindow.document.close()
+    // printWindow.focus()
     printWindow.print()
     printWindow.close()
 }
 
-async function getPrintHtml() {
+async function getUsersListPrintHtml() {
     const response = await apiFunctions.getAllUsers()
 
     if (response.ok == false) {
-        alert("Cannot get users list!")
+        alert("Cannot get users list for printing!")
         return
     }
 
     const users = await response.json()
 
     const table = document.createElement("table")
-    for (const user of users)
-        table.append(await getUserHtmlTr(user))
+    table.setAttribute("border", "1")
 
+    const caption = document.createElement("caption")
+    caption.innerHTML = "USERS LIST"
+    table.append(caption)
+
+    const thead = document.createElement("thead")
+    const headRow = document.createElement("tr")
+
+    const nameTd = document.createElement("td")
+    nameTd.innerHTML = "Name"
+    headRow.append(nameTd)
+
+    const ageTd = document.createElement("td")
+    ageTd.append("Age")
+    headRow.append(ageTd)
+
+    thead.append(headRow)
+    table.append(thead)
+
+    const tbody = document.createElement("tbody")
+    for (const user of users)
+        tbody.append(await createUserPrintRow(user))
+
+    table.append(tbody)
     return table.outerHTML
 }
 
-async function getUserHtmlTr(userJson) {
+async function createUserPrintRow(userJson) {
     const tr = document.createElement("tr")
 
     const nameTd = document.createElement("td")
