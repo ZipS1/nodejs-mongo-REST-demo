@@ -6,6 +6,7 @@ async function init() {
     document.forms[constants.addUserForm].addEventListener("submit", onAddUserFormSumbit)
     document.forms[constants.findUserForm].addEventListener("submit", onFindUserFormSubmit)
     document.getElementById(constants.showAllButtonId).addEventListener("click", showAllUsers)
+    document.getElementById(constants.printButtonId).addEventListener("click", printList)
     await showAllUsers()
 }
 
@@ -97,7 +98,8 @@ async function onEditButtonClick(event, id) {
 
     const otherButtons = document.querySelectorAll
         (`#${constants.editButtonId}, #${constants.deleteButtonId},
-            #${constants.addButtonId}, #${constants.findButtonId}`)
+            #${constants.addButtonId}, #${constants.findButtonId},
+            #${constants.printButtonId}`)
 
     for (const btn of otherButtons)
         btn.setAttribute("disabled", "")
@@ -201,4 +203,46 @@ async function fillListWith(usersJson) {
     usersList.innerHTML = ""
     for (const user of usersJson)
         usersList.append(createUserRow(user))
+}
+
+async function printList() {
+    let printWindow = window.open("", "", "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0")
+    printWindow.document.write(await getPrintHtml())
+    printWindow.document.close()
+    printWindow.print()
+    printWindow.close()
+}
+
+async function getPrintHtml() {
+    const response = await fetch("/api/users", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    });
+
+    if (response.ok == false) {
+        alert("Cannot get users list!")
+        return
+    }
+
+    const users = await response.json()
+
+    const table = document.createElement("table")
+    for (const user of users)
+        table.append(await getUserHtmlTr(user))
+
+    return table.outerHTML
+}
+
+async function getUserHtmlTr(userJson) {
+    const tr = document.createElement("tr")
+
+    const nameTd = document.createElement("td")
+    nameTd.append(userJson.name)
+    tr.append(nameTd)
+
+    const ageTd = document.createElement("td")
+    ageTd.append(userJson.age)
+    tr.append(ageTd)
+    
+    return tr
 }
