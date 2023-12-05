@@ -1,4 +1,5 @@
 import constants from "./constants.js"
+import apiFunctions from "./usersApiHandler.js"
 
 init()
 
@@ -6,24 +7,14 @@ async function init() {
     document.forms[constants.addUserForm].addEventListener("submit", onAddUserFormSumbit)
     document.forms[constants.findUserForm].addEventListener("submit", onFindUserFormSubmit)
     document.getElementById(constants.showAllButtonId).addEventListener("click", showAllUsers)
+    document.getElementById(constants.printButtonId).addEventListener("click", printUsersList)
     await showAllUsers()
 }
 
 async function showAllUsers() {
-    const addButton = document.getElementById(constants.addButtonId)
-    addButton.removeAttribute("disabled")
-
-    const response = await fetch("/api/users", {
-        method: "GET",
-        headers: { "Accept": "application/json" }
-    });
-
-    if (response.ok == false) {
-        alert("Cannot get users list!")
-        return
-    }
-
-    fillListWith(await response.json())
+    await enableButtons()
+    const response = await apiFunctions.getAllUsers()
+    response.ok ? fillListWith(await response.json()) : alert("Cannot get all users!")
 }
 
 function createUserRow(userJson) {
@@ -95,26 +86,13 @@ async function onEditButtonClick(event, id) {
     firstButtonTd.innerHTML = ""
     firstButtonTd.append(confirmButon)
 
-    const otherButtons = document.querySelectorAll
-        (`#${constants.editButtonId}, #${constants.deleteButtonId},
-            #${constants.addButtonId}, #${constants.findButtonId}`)
-
-    for (const btn of otherButtons)
-        btn.setAttribute("disabled", "")
+    await disableButtonsExceptConfirm();
 }
 
 async function onDeleteButtonClick(event, id) {
     event.preventDefault()
-
-    const response = await fetch(`api/users/${id}`, {
-        method: "DELETE",
-        headers: { "Accept": "application/json" }
-    })
-
-    if (response.ok == false)
-        alert("Cannot delete user!")
-    else
-        await showAllUsers()
+    const response = await apiFunctions.deleteUser(id)
+    response.ok ? await showAllUsers() : alert("Cannot delete user!")
 }
 
 async function onConfirmButtonClick(event, id) {
@@ -122,19 +100,13 @@ async function onConfirmButtonClick(event, id) {
     const newName = document.getElementById("newName").value
     const newAge = document.getElementById("newAge").value
 
-    const response = fetch(`api/users/${id}`, {
-        method: "PUT",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            name: newName,
-            age: parseInt(newAge, 10)
-        })
-    })
+    const newUser = {
+        name: newName,
+        age: parseInt(newAge, 10)
+    }
 
-    if (response.ok == false)
-        alert("Cannot edit user!")
-
-    await showAllUsers()
+    const response = await apiFunctions.changeUser(id, newUser)
+    response.ok ? await showAllUsers() : alert("Cannot edit user!")
 }
 
 async function onAddUserFormSumbit(event) {
@@ -154,19 +126,13 @@ async function onAddUserFormSumbit(event) {
         return
     }
 
-    const response = await fetch("/api/users", {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            name: userName,
-            age: parseInt(userAge, 10)
-        })
-    })
+    const newUser = {
+        name: userName,
+        age: parseInt(userAge, 10)
+    }
 
-    if (response.ok == false)
-        alert("Cannot add new user!")
-    else
-        await showAllUsers()
+    const response = await apiFunctions.addUser(newUser)
+    response.ok ? await showAllUsers() : alert("Cannot add new user!")        
 }
 
 async function onFindUserFormSubmit(event) {
@@ -175,19 +141,13 @@ async function onFindUserFormSubmit(event) {
     const name = event.target.name.value
     const age = event.target.age.value
 
-    let query = "?"
-    if (id !== "")
-        query += `id=${id}&`
-    if (name !== "")
-        query += `name=${name}&`
-    if (age !== "")
-        query += `age=${age}&`
+    const findJson = {
+        id: id,
+        name: name,
+        age: age,
+    }
 
-    const response = await fetch("/api/users/user" + query, {
-        method: "GET",
-        headers: { "Accept": "application/json" }
-    });
-
+    const response = await apiFunctions.findUsers(findJson)
     if (response.ok == false) {
         alert("Cannot get users with this parameters!")
         return
@@ -201,4 +161,87 @@ async function fillListWith(usersJson) {
     usersList.innerHTML = ""
     for (const user of usersJson)
         usersList.append(createUserRow(user))
+}
+
+async function printUsersList() {
+    let printWindow = window.open("", "", "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0")
+    printWindow.document.write(await getUsersListPrintHtml())
+    printWindow.document.close()
+    // printWindow.focus()
+    printWindow.print()
+    printWindow.close()
+}
+
+async function getUsersListPrintHtml() {
+    const response = await apiFunctions.getAllUsers()
+
+    if (response.ok == false) {
+        alert("Cannot get users list for printing!")
+        return
+    }
+
+    const users = await response.json()
+
+    const table = document.createElement("table")
+    table.setAttribute("border", "1")
+
+    const caption = document.createElement("caption")
+    caption.innerHTML = "USERS LIST"
+    table.append(caption)
+
+    const thead = document.createElement("thead")
+    const headRow = document.createElement("tr")
+
+    const nameTd = document.createElement("td")
+    nameTd.innerHTML = "Name"
+    headRow.append(nameTd)
+
+    const ageTd = document.createElement("td")
+    ageTd.append("Age")
+    headRow.append(ageTd)
+
+    thead.append(headRow)
+    table.append(thead)
+
+    const tbody = document.createElement("tbody")
+    for (const user of users)
+        tbody.append(await createUserPrintRow(user))
+
+    table.append(tbody)
+    return table.outerHTML
+}
+
+async function createUserPrintRow(userJson) {
+    const tr = document.createElement("tr")
+
+    const nameTd = document.createElement("td")
+    nameTd.append(userJson.name)
+    tr.append(nameTd)
+
+    const ageTd = document.createElement("td")
+    ageTd.append(userJson.age)
+    tr.append(ageTd)
+    
+    return tr
+}
+
+async function disableButtonsExceptConfirm() {
+    const otherButtons = document.querySelectorAll
+        (`#${constants.editButtonId}, #${constants.deleteButtonId},
+            #${constants.addButtonId}, #${constants.findButtonId},
+            #${constants.printButtonId}`)
+
+    for (const btn of otherButtons)
+        btn.setAttribute("disabled", "")
+}
+
+async function enableButtons() {
+    const addButton = document.getElementById(constants.addButtonId)
+    addButton.removeAttribute("disabled")
+
+    const findButton = document.getElementById(constants.findButtonId)
+    findButton.removeAttribute("disabled")
+
+    const printButton = document.getElementById(constants.printButtonId)
+    printButton.removeAttribute("disabled")
 }
