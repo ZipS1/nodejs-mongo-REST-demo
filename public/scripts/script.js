@@ -269,7 +269,8 @@ async function disableButtonsExceptConfirm() {
     const otherButtons = document.querySelectorAll
         (`#${constants.editButtonId}, #${constants.deleteButtonId},
             #${constants.addButtonId}, #${constants.findButtonId},
-            #${constants.printListButtonId}, #${constants.printUserButtonId}`)
+            #${constants.printListButtonId}, #${constants.printUserButtonId},
+            input[type="reset"]`)
 
     for (const btn of otherButtons)
         btn.setAttribute("disabled", "")
@@ -284,4 +285,8 @@ async function enableButtons() {
 
     const printAllButton = document.getElementById(constants.printListButtonId)
     printAllButton.removeAttribute("disabled")
+
+    const clearButtons = document.querySelectorAll(`input[type="reset"]`)
+    for (const btn of clearButtons)
+        btn.removeAttribute("disabled")
 }
