@@ -9,7 +9,7 @@ const constants = {
     deleteButtonId: "deleteButton",
     confirmButtonId: "confirmButton",
     showAllButtonId: "showAllButton",
-    printButtonId: "printButton",
+    printListButtonId: "printListButton",
 }
 
 export default constants
