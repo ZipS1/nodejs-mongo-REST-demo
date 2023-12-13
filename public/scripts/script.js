@@ -174,9 +174,11 @@ async function printUsersList() {
 async function getUsersListPrintHtml() {
     const table = document.createElement("table")
     table.setAttribute("border", "1")
+    table.setAttribute("style", "width: 50%; margin: 0 auto;")
 
     const caption = document.createElement("caption")
     caption.innerHTML = "USERS LIST"
+    caption.setAttribute("style", "font-weight: bold; margin-bottom: 10px;")
     table.append(caption)
 
     const thead = document.createElement("thead")
