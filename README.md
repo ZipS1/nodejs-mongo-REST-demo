@@ -1,2 +1,18 @@
-# nodejs-mongo-crud
-NodeJS + mongo REST demo for educational purposes
+# Технические требования
+### 1. NodeJS и npm
+Проверить установку можно с помощью консольных команд `node --version` и `npm --version`. \
+Установить можно на [официальном сайте](https://nodejs.org/en) NodeJS. \
+_Рекомендуется версия LTS_.
+### 2. MongoDB Server
+Установить можно на [официальном сайте](https://www.mongodb.com/try/download/community) MongoDB.
+# Запуск проекта
+#### 1. Скачайте и распакуйте архив с проектом
+Чтобы скачать архив, необходимо нажать на кнопку 
+![Code](https://dummyimage.com/60x30/046955/ffffff.png&text=%3C%3E+Code) -> `Download ZIP`
+#### 2. Установите пакеты NodeJS
+В папке с проектом введите консольную команду `npm install`
+#### 3. Запустите сервер MongoDB
+#### 4. Запустите сервер NodeJS
+В папке с проектом введите консольную команду `npm start`
+#### 5. Перейдите на сайт
+В адресной строке браузера введите `localhost:3000`
