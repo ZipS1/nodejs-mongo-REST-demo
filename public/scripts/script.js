@@ -7,7 +7,7 @@ async function init() {
     document.forms[constants.addUserForm].addEventListener("submit", onAddUserFormSumbit)
     document.forms[constants.findUserForm].addEventListener("submit", onFindUserFormSubmit)
     document.getElementById(constants.showAllButtonId).addEventListener("click", showAllUsers)
-    document.getElementById(constants.printButtonId).addEventListener("click", printUsersList)
+    document.getElementById(constants.printListButtonId).addEventListener("click", printUsersList)
     await showAllUsers()
 }
 
@@ -174,9 +174,11 @@ async function printUsersList() {
 async function getUsersListPrintHtml() {
     const table = document.createElement("table")
     table.setAttribute("border", "1")
+    table.setAttribute("style", "width: 50%; margin: 0 auto;")
 
     const caption = document.createElement("caption")
     caption.innerHTML = "USERS LIST"
+    caption.setAttribute("style", "font-weight: bold; margin-bottom: 10px;")
     table.append(caption)
 
     const thead = document.createElement("thead")
@@ -216,7 +218,7 @@ async function disableButtonsExceptConfirm() {
     const otherButtons = document.querySelectorAll
         (`#${constants.editButtonId}, #${constants.deleteButtonId},
             #${constants.addButtonId}, #${constants.findButtonId},
-            #${constants.printButtonId}`)
+            #${constants.printListButtonId}`)
 
     for (const btn of otherButtons)
         btn.setAttribute("disabled", "")
@@ -229,6 +231,6 @@ async function enableButtons() {
     const findButton = document.getElementById(constants.findButtonId)
     findButton.removeAttribute("disabled")
 
-    const printButton = document.getElementById(constants.printButtonId)
+    const printButton = document.getElementById(constants.printListButtonId)
     printButton.removeAttribute("disabled")
 }
