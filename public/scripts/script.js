@@ -7,7 +7,7 @@ async function init() {
     document.forms[constants.addUserForm].addEventListener("submit", onAddUserFormSumbit)
     document.forms[constants.findUserForm].addEventListener("submit", onFindUserFormSubmit)
     document.getElementById(constants.showAllButtonId).addEventListener("click", showAllUsers)
-    document.getElementById(constants.printListButtonId).addEventListener("click", printUsersList)
+    document.getElementById(constants.printListButtonId).addEventListener("click", onPrintUsersButtonClicked)
     await showAllUsers()
 }
 
@@ -50,6 +50,15 @@ function createUserRow(userJson) {
     deleteButton.append("Delete")
     deleteTd.append(deleteButton)
     tr.append(deleteTd)
+
+    const printTd = document.createElement("td")
+    const printButton = document.createElement("button")
+    printButton.setAttribute("id", constants.printUserButtonId)
+    printButton.addEventListener("click", (e) => {
+        onPrintSingleUserButtonClicked(e)})
+    printButton.append("Print")
+    printTd.append(printButton)
+    tr.append(printTd)
 
     return tr
 }
@@ -163,9 +172,21 @@ async function fillListWith(usersJson) {
         usersList.append(createUserRow(user))
 }
 
-async function printUsersList() {
+async function onPrintUsersButtonClicked() {
     let printWindow = window.open("", "", "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0")
     printWindow.document.write(await getUsersListPrintHtml())
+    printWindow.document.close()
+    printWindow.print()
+    printWindow.close()
+}
+
+async function onPrintSingleUserButtonClicked(event) {
+    const row = event.target.parentElement.parentElement
+    const name = row.getElementsByTagName("td")[1].innerHTML
+    const age = row.getElementsByTagName("td")[2].innerHTML
+
+    let printWindow = window.open("", "", "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0")
+    printWindow.document.write(await getSingleUserPrintHtml(name, age))
     printWindow.document.close()
     printWindow.print()
     printWindow.close()
@@ -202,11 +223,41 @@ async function getUsersListPrintHtml() {
     return table.outerHTML
 }
 
+async function getSingleUserPrintHtml(name, age) {
+    const table = document.createElement("table")
+    table.setAttribute("style", "width: 30%;")
+
+    const nameRow = document.createElement("tr")
+    const nameLabelTd = document.createElement("td")
+    nameLabelTd.setAttribute("style", "font-weight: bold;")
+    nameLabelTd.append("Name:")
+    nameRow.append(nameLabelTd)
+
+    const nameTd = document.createElement("td")
+    nameTd.append(name)
+    nameRow.append(nameTd)
+    table.append(nameRow)
+
+    const ageRow = document.createElement("tr")
+    const ageLabelTd = document.createElement("td")
+    ageLabelTd.setAttribute("style", "font-weight: bold;")
+    ageLabelTd.append("Age:")
+    ageRow.append(ageLabelTd)
+
+    const ageTd = document.createElement("td")
+    ageTd.append(age)
+    ageRow.append(ageTd)
+    table.append(ageRow)
+
+    return table.outerHTML
+}
+
 async function removeIdAndButtonCols(tbody) {
     const rows = tbody.querySelectorAll("tr")
     for (let i = 0; i < rows.length; i++) {
         let row = rows[i]
         row.removeChild(row.firstChild)
+        row.removeChild(row.lastElementChild)
         row.removeChild(row.lastElementChild)
         row.removeChild(row.lastElementChild)
     }
@@ -218,7 +269,7 @@ async function disableButtonsExceptConfirm() {
     const otherButtons = document.querySelectorAll
         (`#${constants.editButtonId}, #${constants.deleteButtonId},
             #${constants.addButtonId}, #${constants.findButtonId},
-            #${constants.printListButtonId}`)
+            #${constants.printListButtonId}, #${constants.printUserButtonId}`)
 
     for (const btn of otherButtons)
         btn.setAttribute("disabled", "")
@@ -231,6 +282,6 @@ async function enableButtons() {
     const findButton = document.getElementById(constants.findButtonId)
     findButton.removeAttribute("disabled")
 
-    const printButton = document.getElementById(constants.printListButtonId)
-    printButton.removeAttribute("disabled")
+    const printAllButton = document.getElementById(constants.printListButtonId)
+    printAllButton.removeAttribute("disabled")
 }
