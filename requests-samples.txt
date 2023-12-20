@@ -27,3 +27,14 @@ accept: application/json
 
 DELETE http://localhost:3000/api/users/6567c145ef1133f1bc2114d2 HTTP/1.1
 accept: application/json
+
+// Wrong response 
+
+POST http://localhost:3000/api/users HTTP/1.1
+content-type: application/json
+accept: application/json
+
+{
+    name: "Roma",
+    age: 21
+}
